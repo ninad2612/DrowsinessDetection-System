@@ -22,7 +22,7 @@ Usage:
 
 2. Run the script:
 
-python drowsiness_detection.py
+python main.py
 
 3. Once the script starts, it will open a GUI window showing the camera feed. The status label at the top will indicate whether the person is awake, drowsy, or asleep based on their blinking patterns.
 
