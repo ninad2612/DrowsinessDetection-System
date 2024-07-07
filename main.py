@@ -5,16 +5,20 @@ from imutils import face_utils
 import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
+import pygame  
 
 cap = cv2.VideoCapture(0)
 detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
+predictor = dlib.shape_predictor("DrowsinessDetection-System/shape_predictor_68_face_landmarks.dat")
 
 sleep = 0
 drowsy = 0
 active = 0
 status = ""
 color = (0, 0, 0)
+
+# Initialize pygame for playing audio
+pygame.mixer.init()
 
 def compute(ptA, ptB):
     dist = np.linalg.norm(ptA - ptB)
@@ -31,6 +35,13 @@ def blinked(a, b, c, d, e, f):
         return 1
     else:
         return 0
+
+def play_audio():
+    pygame.mixer.music.load("F:\d\DrowsinessDetection-System\mixkit-alert-alarm-1005.wav")  # Replace with your audio file path
+    pygame.mixer.music.play()
+
+def stop_audio():
+    pygame.mixer.music.stop()
 
 def update_frame():
     global sleep, drowsy, active
@@ -66,6 +77,7 @@ def update_frame():
             if sleep > 6:
                 status_var.set("SLEEPING !!!")
                 status_label.config(foreground="red")
+                play_audio()
 
         elif left_blink == 1 or right_blink == 1:
             sleep = 0
@@ -74,6 +86,7 @@ def update_frame():
             if drowsy > 6:
                 status_var.set("Drowsy !")
                 status_label.config(foreground="blue")
+                stop_audio()
 
         else:
             drowsy = 0
@@ -82,6 +95,7 @@ def update_frame():
             if active > 6:
                 status_var.set("Active")
                 status_label.config(foreground="green")
+                stop_audio()
 
         update_image(face_frame)
 
@@ -109,5 +123,5 @@ update_frame()
 root.protocol("WM_DELETE_WINDOW", lambda: root.destroy())
 root.mainloop()
 
-
 cap.release()
+pygame.mixer.quit()
